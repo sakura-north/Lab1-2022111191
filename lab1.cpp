@@ -16,7 +16,7 @@
 #include <unordered_map>
 #include <utility>
 
-//B2修改
+//Ide修改
 
 /**
  * 文本图分析程序

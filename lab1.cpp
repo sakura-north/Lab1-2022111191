@@ -151,47 +151,43 @@ private:
     static constexpr double DAMPING_FACTOR = 0.85; // PageRank算法的阻尼因子d
     static constexpr int MAX_ITERATIONS = 100; // PageRank迭代的最大次数
     static constexpr double CONVERGENCE_THRESHOLD = 0.0001; // PageRank收敛阈值
-    
-    // 存储单词出现频率，用于TF-IDF计算
-    std::map<std::string, int> wordFrequency;
-    int totalWords = 0;
-
+        
     // 存储原始文本，用于词频计算
     std::vector<std::string> textWords;
-    
+        
     // 导出DOT文件的默认路径
     std::string defaultDotPath = "graph.dot";
     std::string defaultImagePath = "graph.png";
-
+    
 public:
     TextGraphAnalysis() : rng(std::random_device()()) {
         // 用随机数种子初始化随机数生成器
     }
-
+    
     // 处理文本文件并构建有向图
     void processFile(const std::string& filePath) {
         std::ifstream file(filePath);
         if (!file.is_open()) {
             throw std::runtime_error("无法打开文件: " + filePath);
         }
-
+    
         std::string content;
         std::string line;
         while (std::getline(file, line)) {
             content += line + " "; // 将换行符替换为空格
         }
-
+    
         // 将文本转换为小写，并将标点符号替换为空格
         std::string text = content;
         std::transform(text.begin(), text.end(), text.begin(), ::tolower);
-        
+            
         // 将非字母字符替换为空格
         for (auto& c : text) {
             if (!std::isalpha(c)) {
                 c = ' ';
             }
         }
-
+    
         // 将多个连续空格替换为单个空格
         std::string cleanedText;
         bool lastWasSpace = true;
@@ -209,7 +205,7 @@ public:
         if (!cleanedText.empty() && cleanedText.back() == ' ') {
             cleanedText.pop_back();
         }
-
+    
         // 将文本分割成单词
         std::vector<std::string> words;
         std::istringstream iss(cleanedText);
@@ -217,10 +213,8 @@ public:
         while (iss >> word) {
             words.push_back(word);
             textWords.push_back(word);
-            wordFrequency[word]++;
-            totalWords++;
         }
-
+        
         // 根据相邻单词构建有向图
         for (size_t i = 0; i < words.size() - 1; ++i) {
             if (!words[i].empty() && !words[i+1].empty()) {
@@ -587,99 +581,79 @@ public:
         currentPath.pop_back();
     }
 
-    // 计算单词的PageRank值，支持TF-IDF优化（可选功能）
     double calPageRank(const std::string& word) {
         std::string lowerWord = word;
         std::transform(lowerWord.begin(), lowerWord.end(), lowerWord.begin(), ::tolower);
-
+    
         if (!graph.containsVertex(lowerWord)) {
             return 0.0;
         }
-
-        int n = graph.getVertices().size();
-        std::map<std::string, double> pageRank;
-        std::map<std::string, double> newPageRank;
-
-        // 初始化PageRank值，使用TF-IDF优化（可选功能）
-        bool useTfIdf = true; // 设置为true使用TF-IDF优化
-        
-        if (useTfIdf) {
-            // 计算TF-IDF
-            double totalSum = 0.0;
-            std::map<std::string, double> tfidf;
-            
-            for (const auto& vertex : graph.getVertices()) {
-                // 计算TF（词频）
-                double tf = static_cast<double>(wordFrequency[vertex]) / totalWords;
-                
-                // 计算IDF（逆文档频率）- 简化版本
-                double idf = 1.0; // 基础值
-                
-                // 根据节点的连接情况调整IDF
-                int inDegree = graph.getIncomingVertices(vertex).size();
-                int outDegree = graph.getOutDegree(vertex);
-                
-                // 重要节点（高入度、高出度）有更高的IDF
-                if (inDegree > 0 || outDegree > 0) {
-                    idf = log10(n / (1.0 + inDegree + outDegree));
-                    idf = std::max(idf, 0.5); // 确保IDF不会太小
-                }
-                
-                // 计算TF-IDF
-                double score = tf * idf;
-                tfidf[vertex] = score;
-                totalSum += score;
-            }
-            
-            // 归一化TF-IDF值作为初始PageRank
-            for (const auto& vertex : graph.getVertices()) {
-                pageRank[vertex] = tfidf[vertex] / totalSum;
-            }
-        } else {
-            // 使用标准均匀分布
-            for (const auto& vertex : graph.getVertices()) {
-                pageRank[vertex] = 1.0 / n;
-            }
+    
+        const double d = 0.85;
+        const int max_iter = 100;
+        const double tol = 1e-6;
+    
+        std::vector<std::string> nodes(graph.getVertices().begin(), graph.getVertices().end());
+        int N = nodes.size();
+        if (N == 0) {
+            return 0.0;
         }
-
-        // 迭代计算
-        for (int iteration = 0; iteration < MAX_ITERATIONS; ++iteration) {
-            double maxDifference = 0.0;
-
-            // 计算每个顶点的新PageRank值
-            for (const auto& vertex : graph.getVertices()) {
-                // 计算所有指向该顶点的页面的PR(v)/L(v)之和
-                double sum = 0.0;
-                std::set<std::string> incomingVertices = graph.getIncomingVertices(vertex);
-
-                for (const auto& source : incomingVertices) {
-                    int outDegree = graph.getOutDegree(source);
-                    if (outDegree > 0) {
-                        sum += pageRank[source] / outDegree;
+    
+        std::map<std::string, double> pr;
+        std::map<std::string, int> out_degree;
+    
+        // 初始化PageRank值和出度
+        for (const auto& node : nodes) {
+            pr[node] = 1.0 / N;
+            out_degree[node] = graph.getOutgoingEdges(node).size();
+        }
+    
+        // PageRank迭代
+        for (int iter = 0; iter < max_iter; ++iter) {
+            std::map<std::string, double> new_pr;
+    
+            // 预计算所有悬挂节点（出度为0）的PR和
+            double sum_dangling_pr = 0.0;
+            for (const auto& node : nodes) {
+                if (out_degree[node] == 0) {
+                    sum_dangling_pr += pr[node];
+                }
+            }
+    
+            // 计算每个节点的新PR值
+            for (const auto& node : nodes) {
+                double inbound_sum = 0.0;
+    
+                // 遍历指向node的所有源节点
+                std::set<std::string> incoming = graph.getIncomingVertices(node);
+                for (const auto& neighbor : incoming) {
+                    int outDeg = out_degree[neighbor];
+                    if (outDeg > 0) {
+                        inbound_sum += pr[neighbor] / outDeg;
                     }
                 }
-
-                // PageRank公式: PR(u) = (1-d)/N + d * sum(PR(v)/L(v))
-                double newRank = (1 - DAMPING_FACTOR) / n + DAMPING_FACTOR * sum;
-                newPageRank[vertex] = newRank;
-
-                // 跟踪最大变化
-                maxDifference = std::max(maxDifference, std::abs(newRank - pageRank[vertex]));
+    
+                // 标准PageRank公式 + 悬挂节点贡献
+                new_pr[node] = (1 - d) / N + d * inbound_sum + d * sum_dangling_pr / N;
             }
-
-            // 更新PageRank值
-            pageRank = newPageRank;
-
-            // 检查收敛性
-            if (maxDifference < CONVERGENCE_THRESHOLD) {
-                std::cout << "PageRank在" << (iteration + 1) << "次迭代后收敛！" << std::endl;
+    
+            // 检查收敛
+            double max_diff = 0.0;
+            for (const auto& node : nodes) {
+                max_diff = std::max(max_diff, std::abs(new_pr[node] - pr[node]));
+            }
+    
+            pr = new_pr;
+    
+            if (max_diff < tol) {
+                std::cout << "PageRank在" << (iter + 1) << "次迭代后收敛！" << std::endl;
                 break;
             }
         }
-
-        return pageRank[lowerWord];
+    
+        return pr.count(lowerWord) ? pr[lowerWord] : 0.0;
     }
-
+    
     // 在图上执行随机游走
     std::string randomWalk() {
         if (graph.getVertices().empty()) {

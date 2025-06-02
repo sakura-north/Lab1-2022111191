@@ -1,0 +1,53 @@
+digraph TextGraph {
+  rankdir=LR;
+  node [shape=ellipse, style=filled, fillcolor=lightblue, fontname="Arial"];
+  edge [color=gray, fontname="Arial"];
+  bgcolor=white;
+
+  "but";
+  "a";
+  "shared";
+  "data";
+  "carefully";
+  "scientist";
+  "more";
+  "wrote";
+  "again";
+  "analyzed";
+  "team";
+  "it";
+  "the";
+  "with";
+  "requested";
+  "detailed";
+  "and";
+  "report";
+  "so";
+
+  "but" -> "the" [color="gray"];
+  "a" -> "detailed" [color="gray"];
+  "shared" -> "the" [color="gray"];
+  "data" -> "so" [color="gray"];
+  "data" -> "wrote" [color="gray"];
+  "carefully" -> "analyzed" [color="gray"];
+  "scientist" -> "analyzed" [color="gray"];
+  "scientist" -> "carefully" [color="gray"];
+  "more" -> "data" [color="gray"];
+  "wrote" -> "a" [color="gray"];
+  "analyzed" -> "the" [color="gray"];
+  "analyzed" -> "it" [color="gray"];
+  "team" -> "but" [color="gray"];
+  "team" -> "requested" [color="gray"];
+  "it" -> "again" [color="gray"];
+  "the" -> "report" [color="gray"];
+  "the" -> "team" [label="2", penwidth=1.5, color="blue"];
+  "the" -> "data" [color="gray"];
+  "the" -> "scientist" [label="2", penwidth=1.5, color="blue"];
+  "with" -> "the" [color="gray"];
+  "requested" -> "more" [color="gray"];
+  "detailed" -> "report" [color="gray"];
+  "and" -> "shared" [color="gray"];
+  "report" -> "with" [color="gray"];
+  "report" -> "and" [color="gray"];
+  "so" -> "the" [color="gray"];
+}

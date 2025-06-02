@@ -1,0 +1,326 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > TextGraphAnalysisTest</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">&lt;empty package name&gt;</a>
+</div>
+
+<h1>Coverage Summary for Class: TextGraphAnalysisTest (&lt;empty package name&gt;)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">TextGraphAnalysisTest</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/15)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/2)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/85)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;import org.junit.jupiter.api.BeforeEach;
+&nbsp;import org.junit.jupiter.api.Test;
+&nbsp;import org.junit.jupiter.api.DisplayName;
+&nbsp;import org.junit.jupiter.api.AfterEach;
+&nbsp;import static org.junit.jupiter.api.Assertions.*;
+&nbsp;
+&nbsp;import java.io.File;
+&nbsp;import java.io.FileWriter;
+&nbsp;import java.io.IOException;
+&nbsp;
+<b class="nc">&nbsp;public class TextGraphAnalysisTest {</b>
+&nbsp;
+&nbsp;    private TextGraphAnalysis textGraph;
+&nbsp;
+&nbsp;    @BeforeEach
+&nbsp;    void setUp() {
+<b class="nc">&nbsp;        textGraph = new TextGraphAnalysis();</b>
+<b class="nc">&nbsp;        setupTestGraph();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    private void setupTestGraph() {
+&nbsp;        try {
+<b class="nc">&nbsp;            File testFile = new File(&quot;test_input.txt&quot;);</b>
+<b class="nc">&nbsp;            FileWriter writer = new FileWriter(testFile);</b>
+&nbsp;
+<b class="nc">&nbsp;            writer.write(&quot;the big cat sits on the mat. &quot;);</b>
+<b class="nc">&nbsp;            writer.write(&quot;a small dog runs fast. &quot;);</b>
+<b class="nc">&nbsp;            writer.write(&quot;hello world peace. &quot;);</b>
+<b class="nc">&nbsp;            writer.write(&quot;the big dog runs. &quot;);</b>
+&nbsp;            writer.close();
+&nbsp;
+<b class="nc">&nbsp;            textGraph.processFile(&quot;test_input.txt&quot;);</b>
+<b class="nc">&nbsp;            testFile.delete();</b>
+&nbsp;
+&nbsp;        } catch (IOException e) {
+<b class="nc">&nbsp;            fail(&quot;Failed to setup test graph: &quot; + e.getMessage());</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    // 测试用例1: 测试存在单个桥接词的情况
+&nbsp;    @Test
+&nbsp;    @DisplayName(&quot;TC001: 测试存在桥接词的情况&quot;)
+&nbsp;    void testQueryBridgeWords_ExistingBridge() {
+<b class="nc">&nbsp;        String result = textGraph.queryBridgeWords(&quot;the&quot;, &quot;cat&quot;);</b>
+&nbsp;
+<b class="nc">&nbsp;        assertNotNull(result, &quot;结果不应该为null&quot;);</b>
+<b class="nc">&nbsp;        assertTrue(result.contains(&quot;big&quot;), &quot;应该包含桥接词&#39;big&#39;&quot;);</b>
+<b class="nc">&nbsp;        assertTrue(result.contains(&quot;桥接词&quot;), &quot;应该包含&#39;桥接词&#39;提示&quot;);</b>
+&nbsp;
+<b class="nc">&nbsp;        System.out.println(&quot;TC001通过: &quot; + result);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    // 测试用例2: 测试存在桥接词的情况2
+&nbsp;    @Test
+&nbsp;    @DisplayName(&quot;TC002: 测试存在桥接词的情况2&quot;)
+&nbsp;    void testQueryBridgeWords_ExistingBridge2() {
+<b class="nc">&nbsp;        String result = textGraph.queryBridgeWords(&quot;hello&quot;, &quot;peace&quot;);</b>
+&nbsp;
+<b class="nc">&nbsp;        assertNotNull(result, &quot;结果不应该为null&quot;);</b>
+<b class="nc">&nbsp;        assertTrue(result.contains(&quot;world&quot;), &quot;应该包含桥接词&#39;world&#39;&quot;);</b>
+&nbsp;
+<b class="nc">&nbsp;        System.out.println(&quot;TC002通过: &quot; + result);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    // 测试用例3: 测试直接相邻单词无桥接词的情况
+&nbsp;    @Test
+&nbsp;    @DisplayName(&quot;TC003: 测试直接相邻的单词&quot;)
+&nbsp;    void testQueryBridgeWords_DirectlyConnected() {
+<b class="nc">&nbsp;        String result = textGraph.queryBridgeWords(&quot;the&quot;, &quot;big&quot;);</b>
+&nbsp;
+<b class="nc">&nbsp;        assertNotNull(result, &quot;直接相邻单词查询结果不应该为null&quot;);</b>
+<b class="nc">&nbsp;        assertTrue(result.contains(&quot;没有桥接词&quot;), &quot;直接相邻的单词之间应该没有桥接词&quot;);</b>
+&nbsp;
+<b class="nc">&nbsp;        System.out.println(&quot;TC003通过: &quot; + result);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    // 测试用例4: 测试第一个单词不存在的情况
+&nbsp;    @Test
+&nbsp;    @DisplayName(&quot;TC004: 测试第一个单词不存在&quot;)
+&nbsp;    void testQueryBridgeWords_FirstWordNotExist() {
+<b class="nc">&nbsp;        String result = textGraph.queryBridgeWords(&quot;nonexist&quot;, &quot;cat&quot;);</b>
+&nbsp;
+<b class="nc">&nbsp;        assertNotNull(result, &quot;结果不应该为null&quot;);</b>
+<b class="nc">&nbsp;        assertTrue(result.contains(&quot;不存在&quot;), &quot;应该包含&#39;不存在&#39;提示&quot;);</b>
+<b class="nc">&nbsp;        assertTrue(result.contains(&quot;nonexist&quot;), &quot;应该包含不存在的单词&quot;);</b>
+&nbsp;
+<b class="nc">&nbsp;        System.out.println(&quot;TC004通过: &quot; + result);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    // 测试用例5: 测试第二个单词不存在的情况
+&nbsp;    @Test
+&nbsp;    @DisplayName(&quot;TC005: 测试第二个单词不存在&quot;)
+&nbsp;    void testQueryBridgeWords_SecondWordNotExist() {
+<b class="nc">&nbsp;        String result = textGraph.queryBridgeWords(&quot;the&quot;, &quot;nonexist&quot;);</b>
+&nbsp;
+<b class="nc">&nbsp;        assertNotNull(result, &quot;结果不应该为null&quot;);</b>
+<b class="nc">&nbsp;        assertTrue(result.contains(&quot;不存在&quot;), &quot;应该包含&#39;不存在&#39;提示&quot;);</b>
+<b class="nc">&nbsp;        assertTrue(result.contains(&quot;nonexist&quot;), &quot;应该包含不存在的单词&quot;);</b>
+&nbsp;
+<b class="nc">&nbsp;        System.out.println(&quot;TC005通过: &quot; + result);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    // 测试用例6: 测试两个单词都不存在的情况
+&nbsp;    @Test
+&nbsp;    @DisplayName(&quot;TC006: 测试两个单词都不存在&quot;)
+&nbsp;    void testQueryBridgeWords_BothWordsNotExist() {
+<b class="nc">&nbsp;        String result = textGraph.queryBridgeWords(&quot;nonexist1&quot;, &quot;nonexist2&quot;);</b>
+&nbsp;
+<b class="nc">&nbsp;        assertNotNull(result, &quot;结果不应该为null&quot;);</b>
+<b class="nc">&nbsp;        assertTrue(result.contains(&quot;不存在&quot;), &quot;应该包含&#39;不存在&#39;提示&quot;);</b>
+<b class="nc">&nbsp;        assertTrue(result.contains(&quot;nonexist1&quot;) &amp;&amp; result.contains(&quot;nonexist2&quot;),</b>
+&nbsp;                &quot;应该包含两个不存在的单词&quot;);
+&nbsp;
+<b class="nc">&nbsp;        System.out.println(&quot;TC006通过: &quot; + result);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    // 测试用例7: 测试空字符串输入的情况
+&nbsp;    @Test
+&nbsp;    @DisplayName(&quot;TC007: 测试空字符串输入&quot;)
+&nbsp;    void testQueryBridgeWords_EmptyString() {
+<b class="nc">&nbsp;        String result = textGraph.queryBridgeWords(&quot;&quot;, &quot;cat&quot;);</b>
+&nbsp;
+<b class="nc">&nbsp;        assertNotNull(result, &quot;结果不应该为null&quot;);</b>
+<b class="nc">&nbsp;        assertTrue(result.contains(&quot;不存在&quot;), &quot;应该处理空字符串为不存在的情况&quot;);</b>
+&nbsp;
+<b class="nc">&nbsp;        System.out.println(&quot;TC007通过: &quot; + result);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    // 测试用例8: 测试相同单词输入的情况
+&nbsp;    @Test
+&nbsp;    @DisplayName(&quot;TC008: 测试相同单词输入&quot;)
+&nbsp;    void testQueryBridgeWords_SameWords() {
+<b class="nc">&nbsp;        String result = textGraph.queryBridgeWords(&quot;the&quot;, &quot;the&quot;);</b>
+&nbsp;
+<b class="nc">&nbsp;        assertNotNull(result, &quot;相同单词输入结果不应该为null&quot;);</b>
+<b class="nc">&nbsp;        assertTrue(result.contains(&quot;没有桥接词&quot;), &quot;相同单词之间应该没有桥接词&quot;);</b>
+&nbsp;
+<b class="nc">&nbsp;        System.out.println(&quot;TC008通过: &quot; + result);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    // 测试用例9: 测试大小写不敏感的情况
+&nbsp;    @Test
+&nbsp;    @DisplayName(&quot;TC009: 测试大小写不敏感&quot;)
+&nbsp;    void testQueryBridgeWords_CaseInsensitive() {
+<b class="nc">&nbsp;        String result1 = textGraph.queryBridgeWords(&quot;THE&quot;, &quot;CAT&quot;);</b>
+<b class="nc">&nbsp;        String result2 = textGraph.queryBridgeWords(&quot;the&quot;, &quot;CAT&quot;);</b>
+<b class="nc">&nbsp;        String result3 = textGraph.queryBridgeWords(&quot;the&quot;, &quot;cat&quot;);</b>
+&nbsp;
+<b class="nc">&nbsp;        assertNotNull(result1, &quot;大写输入结果不应该为null&quot;);</b>
+<b class="nc">&nbsp;        assertNotNull(result2, &quot;混合大小写结果不应该为null&quot;);</b>
+<b class="nc">&nbsp;        assertNotNull(result3, &quot;小写输入结果不应该为null&quot;);</b>
+&nbsp;
+<b class="nc">&nbsp;        assertTrue(result1.contains(&quot;big&quot;), &quot;大写输入应该找到桥接词&quot;);</b>
+<b class="nc">&nbsp;        assertTrue(result2.contains(&quot;big&quot;), &quot;混合大小写应该找到桥接词&quot;);</b>
+<b class="nc">&nbsp;        assertTrue(result3.contains(&quot;big&quot;), &quot;小写输入应该找到桥接词&quot;);</b>
+&nbsp;
+<b class="nc">&nbsp;        System.out.println(&quot;TC009通过:&quot;);</b>
+<b class="nc">&nbsp;        System.out.println(&quot;  大写: &quot; + result1);</b>
+<b class="nc">&nbsp;        System.out.println(&quot;  混合: &quot; + result2);</b>
+<b class="nc">&nbsp;        System.out.println(&quot;  小写: &quot; + result3);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    // 测试用例10: 测试单词顺序敏感性的情况
+&nbsp;    @Test
+&nbsp;    @DisplayName(&quot;TC010: 测试单词顺序敏感性&quot;)
+&nbsp;    void testQueryBridgeWords_OrderSensitive() {
+<b class="nc">&nbsp;        String result1 = textGraph.queryBridgeWords(&quot;the&quot;, &quot;cat&quot;);</b>
+<b class="nc">&nbsp;        String result2 = textGraph.queryBridgeWords(&quot;cat&quot;, &quot;the&quot;);</b>
+&nbsp;
+<b class="nc">&nbsp;        assertNotNull(result1, &quot;正向查询结果不应该为null&quot;);</b>
+<b class="nc">&nbsp;        assertNotNull(result2, &quot;反向查询结果不应该为null&quot;);</b>
+&nbsp;
+<b class="nc">&nbsp;        System.out.println(&quot;TC010通过:&quot;);</b>
+<b class="nc">&nbsp;        System.out.println(&quot;  the-&gt;cat: &quot; + result1);</b>
+<b class="nc">&nbsp;        System.out.println(&quot;  cat-&gt;the: &quot; + result2);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @AfterEach
+&nbsp;    void tearDown() {
+<b class="nc">&nbsp;        System.out.println(&quot;测试用例执行完成\n&quot;);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    // 如果JUnit运行器不工作，可以用这个main方法
+&nbsp;    public static void main(String[] args) {
+<b class="nc">&nbsp;        TextGraphAnalysisTest test = new TextGraphAnalysisTest();</b>
+&nbsp;
+&nbsp;        try {
+<b class="nc">&nbsp;            test.setUp();</b>
+&nbsp;
+<b class="nc">&nbsp;            System.out.println(&quot;=== 开始运行JUnit风格的测试 ===\n&quot;);</b>
+&nbsp;
+<b class="nc">&nbsp;            test.testQueryBridgeWords_ExistingBridge();</b>
+<b class="nc">&nbsp;            test.testQueryBridgeWords_ExistingBridge2();</b>
+<b class="nc">&nbsp;            test.testQueryBridgeWords_DirectlyConnected();</b>
+<b class="nc">&nbsp;            test.testQueryBridgeWords_FirstWordNotExist();</b>
+<b class="nc">&nbsp;            test.testQueryBridgeWords_SecondWordNotExist();</b>
+<b class="nc">&nbsp;            test.testQueryBridgeWords_BothWordsNotExist();</b>
+<b class="nc">&nbsp;            test.testQueryBridgeWords_EmptyString();</b>
+<b class="nc">&nbsp;            test.testQueryBridgeWords_SameWords();</b>
+<b class="nc">&nbsp;            test.testQueryBridgeWords_CaseInsensitive();</b>
+<b class="nc">&nbsp;            test.testQueryBridgeWords_OrderSensitive();</b>
+&nbsp;
+<b class="nc">&nbsp;            System.out.println(&quot;=== 所有测试完成 ===&quot;);</b>
+&nbsp;
+&nbsp;        } catch (Exception e) {
+<b class="nc">&nbsp;            System.err.println(&quot;测试执行出错: &quot; + e.getMessage());</b>
+<b class="nc">&nbsp;            e.printStackTrace();</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2025-05-28 02:44</div>
+</div>
+</body>
+</html>

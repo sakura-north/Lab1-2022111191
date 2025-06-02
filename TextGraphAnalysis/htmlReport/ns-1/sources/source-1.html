@@ -1,0 +1,344 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > CalcShortestPathWhiteBoxTest</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">&lt;empty package name&gt;</a>
+</div>
+
+<h1>Coverage Summary for Class: CalcShortestPathWhiteBoxTest (&lt;empty package name&gt;)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">CalcShortestPathWhiteBoxTest</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (12/12)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    44.4%
+  </span>
+  <span class="absValue">
+    (8/18)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    97.7%
+  </span>
+  <span class="absValue">
+    (85/87)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;import org.junit.jupiter.api.BeforeEach;
+&nbsp;import org.junit.jupiter.api.Test;
+&nbsp;import org.junit.jupiter.api.DisplayName;
+&nbsp;import org.junit.jupiter.api.TestMethodOrder;
+&nbsp;import org.junit.jupiter.api.MethodOrderer;
+&nbsp;import static org.junit.jupiter.api.Assertions.*;
+&nbsp;import java.io.IOException;
+&nbsp;import java.io.File;
+&nbsp;import java.io.FileWriter;
+&nbsp;
+&nbsp;/**
+&nbsp; * calcShortestPath函数白盒测试类 - JUnit 5版本
+&nbsp; * 基于基本路径法，覆盖所有5条独立路径
+&nbsp; * 对应代码行号：519-539
+&nbsp; */
+&nbsp;@TestMethodOrder(MethodOrderer.DisplayName.class)
+<b class="fc">&nbsp;public class CalcShortestPathWhiteBoxTest {</b>
+&nbsp;
+&nbsp;    private TextGraphAnalysis textGraph;
+<b class="fc">&nbsp;    private String testFilePath = &quot;test_whitebox_junit5.txt&quot;;</b>
+&nbsp;
+&nbsp;    @BeforeEach
+&nbsp;    void setUp() throws IOException {
+<b class="fc">&nbsp;        textGraph = new TextGraphAnalysis();</b>
+&nbsp;
+&nbsp;        // 创建测试文件，构建测试图
+<b class="fc">&nbsp;        createTestFile();</b>
+&nbsp;
+&nbsp;        // 处理文件构建图
+<b class="fc">&nbsp;        textGraph.processFile(testFilePath);</b>
+&nbsp;
+&nbsp;        // 清理文件
+<b class="fc">&nbsp;        cleanupTestFile();</b>
+&nbsp;
+<b class="fc">&nbsp;        System.out.println(&quot;=== 测试环境准备完成 ===&quot;);</b>
+<b class="fc">&nbsp;        System.out.println(&quot;测试图结构：hello -&gt; world -&gt; test, start -&gt; end, isolated&quot;);</b>
+<b class="fc">&nbsp;        System.out.println();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    private void createTestFile() throws IOException {
+<b class="fc">&nbsp;        try (FileWriter writer = new FileWriter(testFilePath)) {</b>
+&nbsp;            // 构建测试图：hello-&gt;world-&gt;test, start-&gt;end, isolated节点
+<b class="fc">&nbsp;            writer.write(&quot;hello world test start end isolated world&quot;);</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    private void cleanupTestFile() {
+<b class="fc">&nbsp;        File file = new File(testFilePath);</b>
+<b class="pc">&nbsp;        if (file.exists()) {</b>
+<b class="fc">&nbsp;            file.delete();</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * 测试用例1：word2为空字符串的情况
+&nbsp;     * 覆盖路径：520→521→524(T)→525
+&nbsp;     * 基本路径1
+&nbsp;     */
+&nbsp;    @Test
+&nbsp;    @DisplayName(&quot;测试用例1：word2为空字符串&quot;)
+&nbsp;    void testPath1_Word2Empty() {
+<b class="fc">&nbsp;        System.out.println(&quot;=== 测试用例1：word2为空 ===&quot;);</b>
+<b class="fc">&nbsp;        System.out.println(&quot;覆盖路径：520→521→524(T)→525&quot;);</b>
+&nbsp;
+<b class="fc">&nbsp;        String result = textGraph.calcShortestPath(&quot;hello&quot;, &quot;&quot;);</b>
+&nbsp;
+<b class="fc">&nbsp;        assertNotNull(result, &quot;结果不应为null&quot;);</b>
+<b class="pc">&nbsp;        assertTrue(result.contains(&quot;到所有其他单词&quot;) ||</b>
+<b class="nc">&nbsp;                        result.contains(&quot;最短路径&quot;) ||</b>
+<b class="fc">&nbsp;                        result.contains(&quot;不存在&quot;),</b>
+&nbsp;                &quot;应包含路径信息或不存在信息&quot;);
+&nbsp;
+<b class="fc">&nbsp;        System.out.println(&quot;输入: word1=&#39;hello&#39;, word2=&#39;&#39;&quot;);</b>
+<b class="pc">&nbsp;        System.out.println(&quot;输出: &quot; + (result.length() &gt; 80 ?</b>
+<b class="fc">&nbsp;                result.substring(0, 80) + &quot;...&quot; : result));</b>
+<b class="fc">&nbsp;        System.out.println(&quot;测试用例1 - 通过 ✓\n&quot;);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * 测试用例2：两个单词都不存在
+&nbsp;     * 覆盖路径：520→521→524(F)→529(T)→530
+&nbsp;     * 基本路径2
+&nbsp;     */
+&nbsp;    @Test
+&nbsp;    @DisplayName(&quot;测试用例2：两个单词都不存在&quot;)
+&nbsp;    void testPath2_BothWordsNotExist() {
+<b class="fc">&nbsp;        System.out.println(&quot;=== 测试用例2：两个单词都不存在 ===&quot;);</b>
+<b class="fc">&nbsp;        System.out.println(&quot;覆盖路径：520→521→524(F)→529(T)→530&quot;);</b>
+&nbsp;
+<b class="fc">&nbsp;        String result = textGraph.calcShortestPath(&quot;nonexistent1&quot;, &quot;nonexistent2&quot;);</b>
+<b class="fc">&nbsp;        String expected = &quot;图中不存在 \&quot;nonexistent1\&quot; 和 \&quot;nonexistent2\&quot;!&quot;;</b>
+&nbsp;
+<b class="fc">&nbsp;        assertEquals(expected, result, &quot;应返回两个单词都不存在的错误&quot;);</b>
+&nbsp;
+<b class="fc">&nbsp;        System.out.println(&quot;输入: word1=&#39;nonexistent1&#39;, word2=&#39;nonexistent2&#39;&quot;);</b>
+<b class="fc">&nbsp;        System.out.println(&quot;输出: &quot; + result);</b>
+<b class="fc">&nbsp;        System.out.println(&quot;测试用例2 - 通过 ✓\n&quot;);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * 测试用例3：第一个单词不存在，第二个存在
+&nbsp;     * 覆盖路径：520→521→524(F)→529(F)→531(T)→532
+&nbsp;     * 基本路径3
+&nbsp;     */
+&nbsp;    @Test
+&nbsp;    @DisplayName(&quot;测试用例3：word1不存在，word2存在&quot;)
+&nbsp;    void testPath3_Word1NotExist() {
+<b class="fc">&nbsp;        System.out.println(&quot;=== 测试用例3：word1不存在，word2存在 ===&quot;);</b>
+<b class="fc">&nbsp;        System.out.println(&quot;覆盖路径：520→521→524(F)→529(F)→531(T)→532&quot;);</b>
+&nbsp;
+<b class="fc">&nbsp;        String result = textGraph.calcShortestPath(&quot;nonexistent&quot;, &quot;hello&quot;);</b>
+<b class="fc">&nbsp;        String expected = &quot;图中不存在 \&quot;nonexistent\&quot;!&quot;;</b>
+&nbsp;
+<b class="fc">&nbsp;        assertEquals(expected, result, &quot;应返回第一个单词不存在的错误&quot;);</b>
+&nbsp;
+<b class="fc">&nbsp;        System.out.println(&quot;输入: word1=&#39;nonexistent&#39;, word2=&#39;hello&#39;&quot;);</b>
+<b class="fc">&nbsp;        System.out.println(&quot;输出: &quot; + result);</b>
+<b class="fc">&nbsp;        System.out.println(&quot;测试用例3 - 通过 ✓\n&quot;);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * 测试用例4：第一个单词存在，第二个不存在
+&nbsp;     * 覆盖路径：520→521→524(F)→529(F)→531(F)→533(T)→534
+&nbsp;     * 基本路径4
+&nbsp;     */
+&nbsp;    @Test
+&nbsp;    @DisplayName(&quot;测试用例4：word1存在，word2不存在&quot;)
+&nbsp;    void testPath4_Word2NotExist() {
+<b class="fc">&nbsp;        System.out.println(&quot;=== 测试用例4：word1存在，word2不存在 ===&quot;);</b>
+<b class="fc">&nbsp;        System.out.println(&quot;覆盖路径：520→521→524(F)→529(F)→531(F)→533(T)→534&quot;);</b>
+&nbsp;
+<b class="fc">&nbsp;        String result = textGraph.calcShortestPath(&quot;hello&quot;, &quot;nonexistent&quot;);</b>
+<b class="fc">&nbsp;        String expected = &quot;图中不存在 \&quot;nonexistent\&quot;!&quot;;</b>
+&nbsp;
+<b class="fc">&nbsp;        assertEquals(expected, result, &quot;应返回第二个单词不存在的错误&quot;);</b>
+&nbsp;
+<b class="fc">&nbsp;        System.out.println(&quot;输入: word1=&#39;hello&#39;, word2=&#39;nonexistent&#39;&quot;);</b>
+<b class="fc">&nbsp;        System.out.println(&quot;输出: &quot; + result);</b>
+<b class="fc">&nbsp;        System.out.println(&quot;测试用例4 - 通过 ✓\n&quot;);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * 测试用例5：两个单词都存在
+&nbsp;     * 覆盖路径：520→521→524(F)→529(F)→531(F)→533(F)→538
+&nbsp;     * 基本路径5
+&nbsp;     */
+&nbsp;    @Test
+&nbsp;    @DisplayName(&quot;测试用例5：两个单词都存在&quot;)
+&nbsp;    void testPath5_BothWordsExist() {
+<b class="fc">&nbsp;        System.out.println(&quot;=== 测试用例5：两个单词都存在 ===&quot;);</b>
+<b class="fc">&nbsp;        System.out.println(&quot;覆盖路径：520→521→524(F)→529(F)→531(F)→533(F)→538&quot;);</b>
+&nbsp;
+<b class="fc">&nbsp;        String result = textGraph.calcShortestPath(&quot;hello&quot;, &quot;world&quot;);</b>
+&nbsp;
+<b class="fc">&nbsp;        assertNotNull(result, &quot;结果不应为null&quot;);</b>
+<b class="pc">&nbsp;        assertTrue(result.contains(&quot;最短路径&quot;) ||</b>
+<b class="nc">&nbsp;                        result.contains(&quot;不存在路径&quot;) ||</b>
+<b class="fc">&nbsp;                        result.contains(&quot;从&quot;),</b>
+&nbsp;                &quot;应包含路径信息或不存在路径信息&quot;);
+&nbsp;
+<b class="fc">&nbsp;        System.out.println(&quot;输入: word1=&#39;hello&#39;, word2=&#39;world&#39;&quot;);</b>
+<b class="pc">&nbsp;        System.out.println(&quot;输出: &quot; + (result.length() &gt; 100 ?</b>
+<b class="fc">&nbsp;                result.substring(0, 100) + &quot;...&quot; : result));</b>
+<b class="fc">&nbsp;        System.out.println(&quot;测试用例5 - 通过 ✓\n&quot;);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * 额外测试：大小写转换验证
+&nbsp;     */
+&nbsp;    @Test
+&nbsp;    @DisplayName(&quot;额外测试：大小写转换&quot;)
+&nbsp;    void testCaseConversion() {
+<b class="fc">&nbsp;        System.out.println(&quot;=== 额外测试：大小写转换 ===&quot;);</b>
+&nbsp;
+<b class="fc">&nbsp;        String result1 = textGraph.calcShortestPath(&quot;HELLO&quot;, &quot;WORLD&quot;);</b>
+<b class="fc">&nbsp;        String result2 = textGraph.calcShortestPath(&quot;hello&quot;, &quot;world&quot;);</b>
+&nbsp;
+<b class="fc">&nbsp;        assertEquals(result2, result1, &quot;大写和小写输入应产生相同结果&quot;);</b>
+&nbsp;
+<b class="fc">&nbsp;        System.out.println(&quot;大小写转换测试通过 ✓\n&quot;);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * 路径覆盖总结测试
+&nbsp;     */
+&nbsp;    @Test
+&nbsp;    @DisplayName(&quot;路径覆盖总结&quot;)
+&nbsp;    void testPathCoverageSummary() {
+<b class="fc">&nbsp;        System.out.println(&quot;=== 路径覆盖总结 ===&quot;);</b>
+<b class="fc">&nbsp;        System.out.println(&quot;基本路径1 (520→521→524T→525): ✓&quot;);</b>
+<b class="fc">&nbsp;        System.out.println(&quot;基本路径2 (520→521→524F→529T→530): ✓&quot;);</b>
+<b class="fc">&nbsp;        System.out.println(&quot;基本路径3 (520→521→524F→529F→531T→532): ✓&quot;);</b>
+<b class="fc">&nbsp;        System.out.println(&quot;基本路径4 (520→521→524F→529F→531F→533T→534): ✓&quot;);</b>
+<b class="fc">&nbsp;        System.out.println(&quot;基本路径5 (520→521→524F→529F→531F→533F→538): ✓&quot;);</b>
+<b class="fc">&nbsp;        System.out.println(&quot;总计: 5/5 路径覆盖 = 100%&quot;);</b>
+<b class="fc">&nbsp;        System.out.println(&quot;预期语句覆盖率: 100%&quot;);</b>
+<b class="fc">&nbsp;        System.out.println(&quot;预期分支覆盖率: 100%&quot;);</b>
+&nbsp;
+<b class="fc">&nbsp;        assertTrue(true, &quot;所有路径已覆盖&quot;);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * 性能测试
+&nbsp;     */
+&nbsp;    @Test
+&nbsp;    @DisplayName(&quot;性能测试&quot;)
+&nbsp;    void testPerformance() {
+<b class="fc">&nbsp;        System.out.println(&quot;=== 性能测试 ===&quot;);</b>
+&nbsp;
+<b class="fc">&nbsp;        long startTime = System.currentTimeMillis();</b>
+&nbsp;
+&nbsp;        // 执行多次调用
+<b class="fc">&nbsp;        for (int i = 0; i &lt; 100; i++) {</b>
+<b class="fc">&nbsp;            textGraph.calcShortestPath(&quot;hello&quot;, &quot;world&quot;);</b>
+<b class="fc">&nbsp;            textGraph.calcShortestPath(&quot;hello&quot;, &quot;&quot;);</b>
+<b class="fc">&nbsp;            textGraph.calcShortestPath(&quot;nonexistent1&quot;, &quot;nonexistent2&quot;);</b>
+&nbsp;        }
+&nbsp;
+<b class="fc">&nbsp;        long endTime = System.currentTimeMillis();</b>
+<b class="fc">&nbsp;        long duration = endTime - startTime;</b>
+&nbsp;
+<b class="fc">&nbsp;        System.out.println(&quot;300次函数调用耗时: &quot; + duration + &quot;ms&quot;);</b>
+<b class="fc">&nbsp;        System.out.println(&quot;平均每次调用: &quot; + (duration / 300.0) + &quot;ms&quot;);</b>
+&nbsp;
+<b class="pc">&nbsp;        assertTrue(duration &lt; 10000, &quot;性能测试：应在10秒内完成300次调用&quot;);</b>
+<b class="fc">&nbsp;        System.out.println(&quot;性能测试通过 ✓\n&quot;);</b>
+&nbsp;    }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2025-05-28 02:44</div>
+</div>
+</body>
+</html>
